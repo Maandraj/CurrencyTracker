@@ -16,3 +16,7 @@ rootProject.name = "CurrencyTracker"
 include ':app'
 include ':core'
 include ':popular-api'
+include ':feature-api'
+include ':popular-impl'
+include ':core-ui'
+include ':models'
