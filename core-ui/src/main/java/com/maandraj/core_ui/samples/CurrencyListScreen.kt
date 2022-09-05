@@ -1,5 +1,6 @@
 package com.maandraj.core_ui.samples
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,9 +15,14 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.maandraj.core.data.models.errors.CException
+import com.maandraj.core.data.models.errors.ErrorModel
+import com.maandraj.core_ui.R
 import com.maandraj.models.domain.RateModel
 import com.maandraj.models.typealiases.SymbolsMap
 import com.maandraj.models.utils.FilterType
@@ -30,6 +36,7 @@ fun CurrencyListScreen(
     symbols: SymbolsMap,
     rates: List<IRateModel>,
     selectSymbol: String,
+    error: ErrorModel?,
     filterType: FilterType,
     order: OrderType,
     onlyFavourite: Boolean,
@@ -85,6 +92,22 @@ fun CurrencyListScreen(
                     swipeRefreshState.isRefreshing = true
                 },
             ) {
+                when (error?.exception) {
+                    is CException.NoInternetConnectionException -> {
+                        Toast.makeText(LocalContext.current,
+                            stringResource(R.string.error_not_internet), Toast.LENGTH_SHORT).show()
+                    }
+                    is CException.EmptyResponse -> {
+                        Toast.makeText(LocalContext.current,
+                            stringResource(R.string.error_empty), Toast.LENGTH_SHORT).show()
+                    }
+                    is CException.UnknownException -> {
+                        Toast.makeText(LocalContext.current,
+                            stringResource(R.string.error_unknown), Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
+                }
+
                 val itemsList = when (filterType) {
                     FilterType.ABC -> {
                         if (order == OrderType.Ascending)

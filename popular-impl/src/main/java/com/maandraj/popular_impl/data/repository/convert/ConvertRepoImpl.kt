@@ -20,8 +20,8 @@ class ConvertRepoImpl @Inject constructor(
     private val convertDao: ConvertDao,
 ) : ConvertRepo {
     override suspend fun getConvertCurrency(base: String): ResultOf<ConvertModel> {
-        val result = convertServiceApi.getConvertCurrency(base = base)
         return try {
+        val result = convertServiceApi.getConvertCurrency(base = base)
             result.body()?.let {
                 val data = convertMapper.map(it)
                 val favourites = convertDao.getFavourites()
@@ -32,7 +32,7 @@ class ConvertRepoImpl @Inject constructor(
                     }
                 }
                 ResultOf.Success(data)
-            } ?: ResultOf.Failure(null)
+            } ?: ResultOf.Failure(ErrorModel(exception = CException.EmptyResponse))
         } catch (ex: UnknownHostException) {
             ResultOf.Failure(ErrorModel(exception = CException.NoInternetConnectionException))
         } catch (ex: TimeoutException) {

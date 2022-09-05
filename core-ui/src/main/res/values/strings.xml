@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_not_internet">Нет интернета</string>
+    <string name="error_empty">Пусто</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+</resources>

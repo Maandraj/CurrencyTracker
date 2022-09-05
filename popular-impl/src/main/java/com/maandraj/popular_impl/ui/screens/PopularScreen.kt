@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.maandraj.core.data.models.errors.ErrorModel
 import com.maandraj.core_ui.samples.CurrencyListScreen
 import com.maandraj.models.domain.RateModel
 import com.maandraj.models.utils.FilterType
@@ -19,6 +20,7 @@ fun PopularScreen(
     val filterType: FilterType by viewModel.filterType.collectAsState()
     val order: OrderType by viewModel.order.collectAsState()
     val selectSymbol: String by viewModel.selectSymbol.collectAsState()
+    val error: ErrorModel? by viewModel.error.collectAsState()
     val isLoading: Boolean by viewModel.loading.collectAsState()
     val onlyFavourite: Boolean by viewModel.onlyFavourite.collectAsState()
     CurrencyListScreen(
@@ -28,6 +30,7 @@ fun PopularScreen(
         rates = rates,
         selectSymbol = selectSymbol,
         filterType = filterType,
+        error = error,
         order = order,
         onlyFavourite = onlyFavourite,
         onClickItemIcon = { item ->

@@ -14,8 +14,8 @@ class SymbolsRepoImpl(
     private val symbolsMapper: SymbolsMapper,
 ) : SymbolsRepo {
     override suspend fun getSymbols(): ResultOf<SymbolsModel> {
-        val result = symbolsServiceApi.getSymbols()
         return try {
+        val result = symbolsServiceApi.getSymbols()
             result.body()?.let {
                 val data = symbolsMapper.map(it)
                 ResultOf.Success(data)
