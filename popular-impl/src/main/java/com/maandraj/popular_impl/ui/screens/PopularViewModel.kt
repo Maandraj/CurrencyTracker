@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.maandraj.core.ui.viewModels.CurrencyViewModel
 import com.maandraj.core.utils.extensions.applyIfError
 import com.maandraj.core.utils.extensions.applyIfSuccess
-import com.maandraj.models.domain.RatesModel
+import com.maandraj.models.domain.RateModel
 import com.maandraj.popular_impl.domain.convert.ConvertUseCase
 import com.maandraj.popular_impl.domain.convert.MarkFavouriteUseCase
 import com.maandraj.popular_impl.domain.convert.UnMarkFavouriteUseCase
@@ -21,6 +21,7 @@ class PopularViewModel(
         getSymbols()
     }
 
+    private var oldRates = listOf<RateModel>()
     private fun getSymbols() = viewModelScope.launch {
         loading.value = true
         symbolsUseCase()
@@ -33,19 +34,34 @@ class PopularViewModel(
         loading.value = false
     }
 
+    fun changeState() {
+        if (!onlyFavourite.value)
+            oldRates = rates.value
+        onlyFavourite.value = !onlyFavourite.value
+        if (onlyFavourite.value)
+            rates.value = rates.value.filter { filter -> filter.isFavourite }
+        else{
+            rates.value = oldRates
+        }
+    }
+
     fun convertCurrentCurrency(base: String) = viewModelScope.launch {
         selectSymbol.value = base
         loading.value = true
         convertUseCase(base)
-            .applyIfSuccess { rates.value = it.rates }
+            .applyIfSuccess {
+                rates.value =
+                    if (onlyFavourite.value) it.rates.filter { filter -> filter.isFavourite }
+                    else it.rates
+            }
             .applyIfError { error.value = it.errorModel }
         loading.value = false
     }
 
-    fun changeData(item: RatesModel) = viewModelScope.launch {
+    fun changeData(item: RateModel) = viewModelScope.launch {
         rates.value.apply {
             val index = rates.value.indexOf(item)
-            val newRate =item.copy(isFavourite = !item.isFavourite)
+            val newRate = item.copy(isFavourite = !item.isFavourite)
             if (newRate.isFavourite)
                 markFavouriteUseCase.invoke(newRate)
             else

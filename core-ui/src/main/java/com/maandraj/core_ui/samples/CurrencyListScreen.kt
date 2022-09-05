@@ -7,15 +7,17 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.maandraj.models.domain.RatesModel
+import com.maandraj.models.domain.RateModel
 import com.maandraj.models.typealiases.SymbolsMap
 import com.maandraj.models.utils.FilterType
 import com.maandraj.models.utils.IRateModel
@@ -30,14 +32,18 @@ fun CurrencyListScreen(
     selectSymbol: String,
     filterType: FilterType,
     order: OrderType,
-    onClickItemIcon: (item:RatesModel) -> Unit,
+    onlyFavourite: Boolean,
+    onClickItemIcon: (item: RateModel) -> Unit,
     onClickDropMenuItem: (name: String) -> Unit,
     onRefreshing: () -> Unit,
     onFilterChanged: (filterType: FilterType, orderType: OrderType) -> Unit,
+    onStateChange: () -> Unit,
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(false)
     val icon = if (order == OrderType.Ascending) Icons.Default.KeyboardArrowUp
-        else Icons.Filled.KeyboardArrowDown
+    else Icons.Filled.KeyboardArrowDown
+    val iconFavourite = if (onlyFavourite) Icons.Default.Star
+    else Icons.Filled.Home
     Scaffold(modifier = modifier.fillMaxSize(),
         topBar = {
             Box(Modifier
@@ -45,6 +51,11 @@ fun CurrencyListScreen(
                 .padding(16.dp),
                 contentAlignment = Alignment.Center) {
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Icon(imageVector = iconFavourite,
+                        contentDescription = null,
+                        modifier = Modifier.clickable {
+                            onStateChange()
+                        })
                     DropDownMenuSample(
                         items = symbols.keys,
                         selectSymbol = selectSymbol) { name ->
@@ -59,7 +70,8 @@ fun CurrencyListScreen(
                         contentDescription = null,
                         modifier = Modifier.clickable {
                             val orderItem =
-                                if (order == OrderType.Ascending) OrderType.Descending else OrderType.Ascending
+                                if (order == OrderType.Ascending) OrderType.Descending
+                                else OrderType.Ascending
                             onFilterChanged(filterType, orderItem)
                         })
                 }
@@ -101,7 +113,7 @@ fun CurrencyListScreen(
                         .padding(padding)) {
                     itemsIndexed(itemsList) { index, item ->
                         CurrencyItem(item = item) {
-                            onClickItemIcon(it as RatesModel)
+                            onClickItemIcon(it as RateModel)
                         }
                     }
                 }
