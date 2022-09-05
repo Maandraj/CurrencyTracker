@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.maandraj.models.domain.RatesModel
+import com.maandraj.models.domain.RateModel
 import com.maandraj.models.utils.IRateModel
 
 @Composable
@@ -21,9 +21,8 @@ fun CurrencyItem(
     item: IRateModel,
     onClickIcon: (item:IRateModel) -> Unit,
 ) {
-    val (isFavourite, setFavourite) = remember {
-        mutableStateOf((item as? RatesModel)?.isFavourite ?: true)
-    }
+    val (isFavourite, setFavourite) = mutableStateOf((item as? RateModel)?.isFavourite ?: true)
+
     val icon = if (isFavourite) Icons.Default.Delete else Icons.Default.Star
     Row(modifier = Modifier.padding(20.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)) {

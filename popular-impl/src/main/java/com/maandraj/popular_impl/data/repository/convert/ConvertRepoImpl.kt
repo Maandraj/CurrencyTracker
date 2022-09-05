@@ -5,7 +5,7 @@ import com.maandraj.core.data.models.errors.ErrorModel
 import com.maandraj.core.data.models.result.ResultOf
 import com.maandraj.models.data.dao.ConvertDao
 import com.maandraj.models.data.entity.RateEntity
-import com.maandraj.models.domain.RatesModel
+import com.maandraj.models.domain.RateModel
 import com.maandraj.popular_impl.data.api.ConvertServiceApi
 import com.maandraj.popular_impl.data.mappers.convert.ConvertMapper
 import com.maandraj.popular_impl.domain.convert.model.ConvertModel
@@ -42,11 +42,11 @@ class ConvertRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun markFavourite(item: RatesModel) {
+    override suspend fun markFavourite(item: RateModel) {
         convertDao.insert(RateEntity(name = item.name, value = item.value))
     }
 
-    override suspend fun unMarkFavourite(item: RatesModel) {
+    override suspend fun unMarkFavourite(item: RateModel) {
         convertDao.delete(RateEntity(name = item.name, value = item.value))
     }
 }
